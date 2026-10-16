@@ -1,10 +1,16 @@
-import Card from '../../pages/card/card';
+import { useState } from 'react';
+import OfferList from '../../offer-list/offer-list';
+import { OfferType } from '../../../types/offer';
 
 type MainPageProps = {
   cardsCount: number;
+  offers: OfferType[];
 }
 
-function MainPage({cardsCount}:MainPageProps): JSX.Element {
+function MainPage({cardsCount, offers}:MainPageProps): JSX.Element {
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const visibleOffers = offers.slice(0, cardsCount);
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -78,7 +84,7 @@ function MainPage({cardsCount}:MainPageProps): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">312 places to stay in Amsterdam</b>
+              <b className="places__found">{visibleOffers.length} places to stay in Amsterdam</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -94,14 +100,14 @@ function MainPage({cardsCount}:MainPageProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                {Array.from({ length: cardsCount }, (_, index) => (
-                  <Card key={index} />
-                ))}
-              </div>
+              <OfferList offers={visibleOffers} onCardHover={setActiveOfferId}/>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              {activeOfferId && (
+                <span className="visually-hidden">
+                  Active offer: {activeOfferId}
+                </span>
+              )}
             </div>
           </div>
         </div>
