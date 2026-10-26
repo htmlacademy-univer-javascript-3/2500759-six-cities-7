@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import OfferList from '../../offer-list/offer-list';
 import { OfferType } from '../../../types/offer';
+import Map from '../../map/map';
 
 type MainPageProps = {
   cardsCount: number;
@@ -8,7 +8,6 @@ type MainPageProps = {
 }
 
 function MainPage({cardsCount, offers}:MainPageProps): JSX.Element {
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const visibleOffers = offers.slice(0, cardsCount);
 
   return (
@@ -100,14 +99,10 @@ function MainPage({cardsCount, offers}:MainPageProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <OfferList offers={visibleOffers} onCardHover={setActiveOfferId}/>
+              <OfferList offers={visibleOffers}/>
             </section>
             <div className="cities__right-section">
-              {activeOfferId && (
-                <span className="visually-hidden">
-                  Active offer: {activeOfferId}
-                </span>
-              )}
+              <Map offers={visibleOffers}/>
             </div>
           </div>
         </div>
