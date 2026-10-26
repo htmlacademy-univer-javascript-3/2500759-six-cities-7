@@ -15,6 +15,8 @@ export enum AppRoute {
   NotFound = '*'
 }
 
+export const getOfferRoute = (id: string): string => AppRoute.Offer.replace(':id', id);
+
 export enum AuthorizationStatus {
   Auth = 'AUTH',
   NoAuth = 'NO_AUTH',

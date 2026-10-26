@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { OfferPreviewType } from '../../../types/offer-preview';
+import type { OfferPreviewType } from '../../../types/offer-preview';
+import { getOfferRoute } from '../../../const';
 
 type CardProps = {
   offer: OfferPreviewType;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
 function Card({offer, onMouseEnter, onMouseLeave}: CardProps): JSX.Element {
@@ -22,7 +23,7 @@ function Card({offer, onMouseEnter, onMouseLeave}: CardProps): JSX.Element {
     <article className="cities__card place-card" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       {isPremium && (<div className="place-card__mark"><span>Premium</span></div>)}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`/offer/${id}`}>
+        <Link to={getOfferRoute(id)}>
           <img className="place-card__image" src={previewImage} width="260" height="200" alt={title}/>
         </Link>
       </div>
@@ -46,7 +47,7 @@ function Card({offer, onMouseEnter, onMouseLeave}: CardProps): JSX.Element {
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${id}`}>{title}</Link>
+          <Link to={getOfferRoute(id)}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
