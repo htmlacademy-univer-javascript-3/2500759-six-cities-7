@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { OfferType } from '../../../types/offer';
+import type { OfferType } from '../../../types/offer';
+import { AppRoute, getOfferRoute } from '../../../const';
 
 type FavoritesPageProps = {
   offers: OfferType[];
@@ -26,7 +27,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
         <div className="container">
           <div className="header__wrapper">
             <div className="header__left">
-              <Link className="header__logo-link" to="/">
+              <Link className="header__logo-link" to={AppRoute.Main}>
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
               </Link>
             </div>
@@ -80,7 +81,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
                             </div>
                           )}
                           <div className="favorites__image-wrapper place-card__image-wrapper">
-                            <Link to={`/offer/${offer.id}`}>
+                            <Link to={getOfferRoute(offer.id)}>
                               <img className="place-card__image" src={offer.previewImage} width="150" height="110" alt={offer.title}/>
                             </Link>
                           </div>
@@ -104,7 +105,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
                               </div>
                             </div>
                             <h2 className="place-card__name">
-                              <Link to={`/offer/${offer.id}`}>
+                              <Link to={getOfferRoute(offer.id)}>
                                 {offer.title}
                               </Link>
                             </h2>
@@ -122,7 +123,7 @@ function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
       </main>
 
       <footer className="footer container">
-        <Link className="footer__logo-link" to="/">
+        <Link className="footer__logo-link" to={AppRoute.Main}>
           <img className="footer__logo" src="img/logo.svg" alt="6 cities logo" width="64" height="33"/>
         </Link>
       </footer>

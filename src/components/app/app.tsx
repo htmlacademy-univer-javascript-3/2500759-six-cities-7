@@ -6,7 +6,7 @@ import LoginPage from '../../components/pages/login-screen/login-screen';
 import OfferPage from '../../components/pages/offer-screen/offer-screen';
 import NotFoundPage from '../../components/pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../../components/private-route/private-route';
-import { OfferType } from '../../types/offer';
+import type { OfferType } from '../../types/offer';
 
 type AppProps = {
   cardsCount: number;

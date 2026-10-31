@@ -1,9 +1,9 @@
-import { OfferPreviewType } from '../../types/offer-preview';
+import type { OfferPreviewType } from '../../types/offer-preview';
 import Card from '../pages/card/card';
 
 type OfferListProps = {
   offers: OfferPreviewType[];
-  onCardHover?: (id: string | null) => void;
+  onCardHover: (id: string | null) => void;
 };
 
 function OfferList({ offers, onCardHover }: OfferListProps): JSX.Element {

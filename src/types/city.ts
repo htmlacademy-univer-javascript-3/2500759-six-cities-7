@@ -1,5 +1,5 @@
 import { CityName } from '../const';
-import { LocationType } from './location';
+import type { LocationType } from './location';
 
 export type CityType = {
   location: LocationType;
