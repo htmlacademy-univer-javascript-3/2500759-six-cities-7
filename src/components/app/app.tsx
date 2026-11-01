@@ -7,14 +7,18 @@ import OfferPage from '../../components/pages/offer-screen/offer-screen';
 import NotFoundPage from '../../components/pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../../components/private-route/private-route';
 import type { OfferType } from '../../types/offer';
+import type { OfferPreviewType } from '../../types/offer-preview';
+import type { ReviewType } from '../../types/review';
 
 type AppProps = {
   cardsCount: number;
   authorizationStatus: AuthorizationStatus;
   offers: OfferType[];
+  reviews: ReviewType[];
+  nearPlaces: OfferPreviewType[];
 }
 
-function App({cardsCount, authorizationStatus, offers}: AppProps): JSX.Element {
+function App({cardsCount, authorizationStatus, offers, reviews, nearPlaces}: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
@@ -36,7 +40,7 @@ function App({cardsCount, authorizationStatus, offers}: AppProps): JSX.Element {
         />
         <Route
           path={AppRoute.Offer}
-          element={<OfferPage offers={offers}/>}
+          element={<OfferPage offers={offers} reviews={reviews} nearPlaces={nearPlaces} />}
         />
         <Route
           path={AppRoute.NotFound}

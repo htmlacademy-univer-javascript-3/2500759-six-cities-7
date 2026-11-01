@@ -1,13 +1,17 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { OfferType } from '../../types/offer';
+import classNames from 'classnames';
+import type { OfferPreviewType } from '../../types/offer-preview';
+
+type MapVariant = 'main' | 'offer';
 
 type MapProps = {
-  offers: OfferType[];
+  offers: OfferPreviewType[];
+  variant?: MapVariant;
 };
 
-function Map({ offers }: MapProps): JSX.Element {
+function Map({ offers, variant = 'main' }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +36,7 @@ function Map({ offers }: MapProps): JSX.Element {
     };
   }, []);
 
-  return <div ref={mapRef} className="cities__map map" style={{ height: '100%' }} />;
+  return <div ref={mapRef} className={classNames('map', {'cities__map': variant === 'main', 'offer__map': variant === 'offer',})} style={{ height: '100%' }}/>;
 }
 
 export default Map;
