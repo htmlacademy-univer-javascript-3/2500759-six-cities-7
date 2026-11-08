@@ -34,7 +34,7 @@ function Map({ offers, variant = 'main' }: MapProps): JSX.Element {
     return () => {
       map.remove();
     };
-  }, []);
+  }, [offers]);
 
   return <div ref={mapRef} className={classNames('map', {'cities__map': variant === 'main', 'offer__map': variant === 'offer',})} style={{ height: '100%' }}/>;
 }
