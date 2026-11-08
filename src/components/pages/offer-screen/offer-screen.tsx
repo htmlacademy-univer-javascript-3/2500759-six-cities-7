@@ -1,7 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../store';
 import ReviewForm from '../../review-form/review-form';
 import NotFoundPage from '../not-found-screen/not-found-screen';
-import type { OfferType } from '../../../types/offer';
 import { AppRoute } from '../../../const';
 import ReviewList from '../../review-list/review-list';
 import NearPlacesList from '../../near-places-list/near-places-list';
@@ -10,13 +11,13 @@ import type { OfferPreviewType } from '../../../types/offer-preview';
 import type { ReviewType } from '../../../types/review';
 
 type OfferPageProps = {
-  offers: OfferType[];
   reviews: ReviewType[];
   nearPlaces: OfferPreviewType[];
 };
 
-function OfferPage({offers, reviews, nearPlaces}: OfferPageProps): JSX.Element {
+function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
+  const offers = useSelector((state: RootState) => state.offers);
   const offer = offers.find((item) => item.id === id);
 
   if (!offer) {

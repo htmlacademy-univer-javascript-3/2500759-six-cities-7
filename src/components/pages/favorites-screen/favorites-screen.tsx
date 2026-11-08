@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import type { OfferType } from '../../../types/offer';
 import { AppRoute, getOfferRoute } from '../../../const';
+import type { RootState } from '../../../store';
 
-type FavoritesPageProps = {
-  offers: OfferType[];
-};
-
-function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
+function FavoritesPage(): JSX.Element {
+  const offers = useSelector((state: RootState) => state.offers);
   const favoriteOffers = offers.filter((offer) => offer.isFavorite);
 
   const grouped = favoriteOffers.reduce<Record<string, OfferType[]>>(
