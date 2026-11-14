@@ -9,9 +9,10 @@ type MapVariant = 'main' | 'offer';
 type MapProps = {
   offers: OfferPreviewType[];
   variant?: MapVariant;
+  activeOfferId: string | null;
 };
 
-function Map({ offers, variant = 'main' }: MapProps): JSX.Element {
+function Map({ offers, variant = 'main', activeOfferId }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,8 +26,22 @@ function Map({ offers, variant = 'main' }: MapProps): JSX.Element {
       attribution: '© OpenStreetMap contributors',
     }).addTo(map);
 
+    const defaultIcon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const activeIcon = L.icon({
+      iconUrl: 'img/pin-active.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
     offers.forEach((offer) => {
-      L.marker([offer.location.latitude, offer.location.longitude])
+      L.marker([offer.location.latitude, offer.location.longitude], {
+        icon: offer.id === activeOfferId ? activeIcon : defaultIcon,
+      })
         .addTo(map)
         .bindPopup(`<b>${offer.title}</b><br/>€${offer.price} / night`);
     });
@@ -34,7 +49,7 @@ function Map({ offers, variant = 'main' }: MapProps): JSX.Element {
     return () => {
       map.remove();
     };
-  }, [offers]);
+  }, [offers, activeOfferId]);
 
   return <div ref={mapRef} className={classNames('map', {'cities__map': variant === 'main', 'offer__map': variant === 'offer',})} style={{ height: '100%' }}/>;
 }
