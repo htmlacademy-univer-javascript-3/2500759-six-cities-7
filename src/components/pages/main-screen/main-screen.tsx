@@ -1,6 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useState } from 'react';
-import type { RootState } from '../../../store';
 import { changeCity } from '../../../store/actions';
 import CitiesList from '../../cities-list/cities-list';
 import { CityName, SortType } from '../../../const';
@@ -14,9 +13,9 @@ type MainPageProps = {
 }
 
 function MainPage({cardsCount}:MainPageProps): JSX.Element {
-  const dispatch = useDispatch();
-  const city = useSelector((state:RootState) => state.city);
-  const offers = useSelector((state: RootState) => state.offers);
+  const dispatch = useAppDispatch();
+  const city = useAppSelector((state) => state.city);
+  const offers = useAppSelector((state) => state.offers);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const [sort, setSort] = useState(SortType.Popular);
   const filteredOffers = offers.filter((offer) => offer.city.name === city);
