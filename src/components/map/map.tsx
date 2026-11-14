@@ -14,6 +14,9 @@ type MapProps = {
 
 function Map({ offers, variant = 'main', activeOfferId }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<globalThis.Map<string, L.Marker>>(
+    new globalThis.Map<string, L.Marker>()
+  );
 
   useEffect(() => {
     if (!mapRef.current) {
@@ -32,24 +35,38 @@ function Map({ offers, variant = 'main', activeOfferId }: MapProps): JSX.Element
       iconAnchor: [20, 40],
     });
 
+    offers.forEach((offer) => {
+      const marker = L.marker([offer.location.latitude, offer.location.longitude], {
+        icon: defaultIcon,
+      })
+        .addTo(map)
+        .bindPopup(`<b>${offer.title}</b><br/>€${offer.price} / night`);
+
+      markersRef.current.set(offer.id, marker);
+    });
+
+    return () => {
+      map.remove();
+    };
+  }, [offers]);
+
+  useEffect(() => {
+    const defaultIcon = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
     const activeIcon = L.icon({
       iconUrl: 'img/pin-active.svg',
       iconSize: [40, 40],
       iconAnchor: [20, 40],
     });
 
-    offers.forEach((offer) => {
-      L.marker([offer.location.latitude, offer.location.longitude], {
-        icon: offer.id === activeOfferId ? activeIcon : defaultIcon,
-      })
-        .addTo(map)
-        .bindPopup(`<b>${offer.title}</b><br/>€${offer.price} / night`);
+    markersRef.current.forEach((marker, id) => {
+      marker.setIcon(id === activeOfferId ? activeIcon : defaultIcon);
     });
-
-    return () => {
-      map.remove();
-    };
-  }, [offers, activeOfferId]);
+  }, [activeOfferId]);
 
   return <div ref={mapRef} className={classNames('map', {'cities__map': variant === 'main', 'offer__map': variant === 'offer',})} style={{ height: '100%' }}/>;
 }

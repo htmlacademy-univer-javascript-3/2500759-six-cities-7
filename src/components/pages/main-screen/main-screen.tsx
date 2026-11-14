@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { changeCity } from '../../../store/actions';
 import CitiesList from '../../cities-list/cities-list';
 import { CityName, SortType } from '../../../const';
@@ -14,13 +14,22 @@ type MainPageProps = {
 
 function MainPage({cardsCount}:MainPageProps): JSX.Element {
   const dispatch = useAppDispatch();
+
   const city = useAppSelector((state) => state.city);
   const offers = useAppSelector((state) => state.offers);
+
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const [sort, setSort] = useState(SortType.Popular);
-  const filteredOffers = offers.filter((offer) => offer.city.name === city);
-  const sortedOffers = sortOffers(filteredOffers, sort);
-  const visibleOffers = sortedOffers.slice(0, cardsCount);
+
+  const filteredOffers = useMemo(
+    () => offers.filter((offer) => offer.city.name === city),
+    [offers, city]
+  );
+
+  const visibleOffers = useMemo(
+    () => sortOffers(filteredOffers, sort).slice(0, cardsCount),
+    [filteredOffers, sort, cardsCount]
+  );
 
   const handleCityChange = (newCity: CityName) => {
     dispatch(changeCity(newCity));
