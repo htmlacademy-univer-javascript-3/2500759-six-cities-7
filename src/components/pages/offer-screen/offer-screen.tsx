@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
 import type { RootState } from '../../../store';
 import ReviewForm from '../../review-form/review-form';
 import NotFoundPage from '../not-found-screen/not-found-screen';
@@ -19,6 +20,7 @@ function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const offers = useSelector((state: RootState) => state.offers);
   const offer = offers.find((item) => item.id === id);
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   if (!offer) {
     return <NotFoundPage/>;
@@ -152,12 +154,12 @@ function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
               </section>
             </div>
           </div>
-          <Map offers={nearPlaces} variant="offer"/>
+          <Map offers={nearPlaces} variant="offer" activeOfferId={activeOfferId}/>
         </section>
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <NearPlacesList offers={nearPlaces} />
+            <NearPlacesList offers={nearPlaces} onCardHover={setActiveOfferId}/>
           </section>
         </div>
       </main>
