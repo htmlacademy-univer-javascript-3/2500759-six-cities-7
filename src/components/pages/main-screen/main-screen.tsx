@@ -7,16 +7,18 @@ import OfferList from '../../offer-list/offer-list';
 import Map from '../../map/map';
 import SortingOptions from '../../sorting-options/sorting-options';
 import { sortOffers } from '../../../utils';
+import Spinner from '../../spinner/spinner';
 
 type MainPageProps = {
   cardsCount: number;
 }
 
 function MainPage({cardsCount}:MainPageProps): JSX.Element {
-  const dispatch = useAppDispatch();
 
+  const dispatch = useAppDispatch();
   const city = useAppSelector((state) => state.city);
   const offers = useAppSelector((state) => state.offers);
+  const isLoading = useAppSelector((state) => state.isLoading);
 
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const [sort, setSort] = useState(SortType.Popular);
@@ -34,6 +36,10 @@ function MainPage({cardsCount}:MainPageProps): JSX.Element {
   const handleCityChange = (newCity: CityName) => {
     dispatch(changeCity(newCity));
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="page page--gray page--main">

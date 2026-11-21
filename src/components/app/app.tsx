@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useAppDispatch } from '../../store/hooks';
+import { loadOffers } from '../../store/api-actions';
 import {Route, BrowserRouter, Routes} from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import MainPage from '../../components/pages/main-screen/main-screen';
@@ -17,6 +20,11 @@ type AppProps = {
 }
 
 function App({cardsCount, authorizationStatus, reviews, nearPlaces}: AppProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(loadOffers());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Routes>
