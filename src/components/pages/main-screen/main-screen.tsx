@@ -1,19 +1,23 @@
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { changeCity } from '../../../store/actions';
 import CitiesList from '../../cities-list/cities-list';
-import { CityName, SortType } from '../../../const';
+import { CityName, SortType, AuthorizationStatus, AppRoute } from '../../../const';
 import OfferList from '../../offer-list/offer-list';
 import Map from '../../map/map';
 import SortingOptions from '../../sorting-options/sorting-options';
 import { sortOffers } from '../../../utils';
 import Spinner from '../../spinner/spinner';
+import { setAuthorizationStatus, setUser } from '../../../store/actions';
 
 type MainPageProps = {
   cardsCount: number;
 }
 
 function MainPage({cardsCount}:MainPageProps): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const user = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
   const city = useAppSelector((state) => state.city);
@@ -37,6 +41,13 @@ function MainPage({cardsCount}:MainPageProps): JSX.Element {
     dispatch(changeCity(newCity));
   };
 
+  const handleSignOut = (evt: React.MouseEvent) => {
+    evt.preventDefault();
+    localStorage.removeItem('token');
+    dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
+    dispatch(setUser(null));
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -53,19 +64,29 @@ function MainPage({cardsCount}:MainPageProps): JSX.Element {
             </div>
             <nav className="header__nav">
               <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
+                {authorizationStatus === AuthorizationStatus.Auth ? (
+                  <>
+                    <li className="header__nav-item user">
+                      <a className="header__nav-link header__nav-link--profile" href="#">
+                        <div className="header__avatar-wrapper user__avatar-wrapper">
+                        </div>
+                        <span className="header__user-name user__name">{user?.email}</span>
+                        <span className="header__favorite-count">3</span>
+                      </a>
+                    </li>
+                    <li className="header__nav-item">
+                      <a className="header__nav-link" href="#" onClick={handleSignOut}>
+                        <span className="header__signout">Sign out</span>
+                      </a>
+                    </li>
+                  </>
+                ) : (
+                  <li className="header__nav-item">
+                    <Link className="header__nav-link" to={AppRoute.Login}>
+                      <span className="header__signout">Sign in</span>
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
           </div>
