@@ -86,6 +86,7 @@ function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
         onChange={handleReviewChange}
       />
       <div className="reviews__button-wrapper">
+        {error && <p className="reviews__error">{error}</p>}
         <p className="reviews__help">
           To submit review please make sure to set{' '}
           <span className="reviews__star">rating</span> and describe your stay
@@ -100,7 +101,6 @@ function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
           Submit
         </button>
       </div>
-      {error && <p className="reviews__error">{error}</p>}
     </form>
   );
 }

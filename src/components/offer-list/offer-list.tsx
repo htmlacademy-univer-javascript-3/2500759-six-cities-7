@@ -13,8 +13,8 @@ function OfferList({ offers, onCardHover }: OfferListProps): JSX.Element {
         <Card
           key={offer.id}
           offer={offer}
-          onMouseEnter={() => onCardHover?.(offer.id)}
-          onMouseLeave={() => onCardHover?.(null)}
+          onMouseEnter={() => onCardHover(offer.id)}
+          onMouseLeave={() => onCardHover(null)}
         />
       ))}
     </div>
