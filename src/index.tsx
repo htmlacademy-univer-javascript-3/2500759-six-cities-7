@@ -14,8 +14,6 @@ root.render(
     <Provider store={store}>
       <App
         cardsCount={Settings.CardsCount}
-        reviews={[]}
-        nearPlaces={[]}
       />
     </Provider>
   </React.StrictMode>
