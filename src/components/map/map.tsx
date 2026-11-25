@@ -23,7 +23,12 @@ function Map({ offers, variant = 'main', activeOfferId }: MapProps): JSX.Element
       return;
     }
 
-    const map = L.map(mapRef.current).setView([52.37454, 4.897976], 13);
+    const firstOffer = offers[0];
+    const center: [number, number] = firstOffer
+      ? [firstOffer.city.location.latitude, firstOffer.city.location.longitude]
+      : [52.37454, 4.897976];
+    const zoom = firstOffer?.city.location.zoom ?? 13;
+    const map = L.map(mapRef.current).setView(center, zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',

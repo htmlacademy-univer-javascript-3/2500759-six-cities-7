@@ -1,8 +1,10 @@
 import type { AppThunk } from './index';
-import { loadOffersRequest, loadOffersSuccess, loadOffersError, setAuthorizationStatus, setUser } from './actions';
+import { loadOffersRequest, loadOffersSuccess, loadOffersError, setAuthorizationStatus, setUser, setOffer, setOfferLoading, setNearPlaces, setReviews, addReview } from './actions';
 import type { OfferType } from '../types/offer';
 import { AuthorizationStatus } from '../const';
 import type { AuthInfo } from '../types/user';
+import type { OfferPreviewType } from '../types/offer-preview';
+import type { ReviewType } from '../types/review';
 
 export const loadOffers = (): AppThunk => async (dispatch, _getState, api) => {
   dispatch(loadOffersRequest());
@@ -41,3 +43,43 @@ export const login = (credentials: {email: string; password: string}): AppThunk<
       return false;
     }
   };
+
+export const fetchOffer = (id:string): AppThunk => async (dispatch, _getState, api) => {
+  dispatch(setOfferLoading(true));
+  try {
+    const {data} = await api.get<OfferType>(`/offers/${id}`);
+    dispatch(setOffer(data));
+  } catch{
+    dispatch(setOffer(null));
+  } finally {
+    dispatch(setOfferLoading(false));
+  }
+};
+
+export const fetchNearPlaces = (id:string): AppThunk => async (dispatch, _getState, api) => {
+  try {
+    const {data} = await api.get<OfferPreviewType[]>(`/offers/${id}/nearby`);
+    dispatch(setNearPlaces(data));
+  } catch {
+    dispatch(setNearPlaces([]));
+  }
+};
+
+export const fetchReviews = (id:string): AppThunk => async (dispatch, _getState, api) => {
+  try {
+    const {data} = await api.get<ReviewType[]>(`/comments/${id}`);
+    dispatch(setReviews(data));
+  } catch {
+    dispatch(setReviews([]));
+  }
+};
+
+export const postReview = (data: {offerId: string; comment: string; rating: number}): AppThunk<Promise<boolean>> => async (dispatch, _getState, api) => {
+  try {
+    const {data: newComment} = await api.post<ReviewType>(`/comments/${data.offerId}`, {comment: data.comment, rating: data.rating});
+    dispatch(addReview(newComment));
+    return true;
+  } catch {
+    return false;
+  }
+};

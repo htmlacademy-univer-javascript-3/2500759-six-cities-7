@@ -1,26 +1,38 @@
-import { useParams, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
-import type { RootState } from '../../../store';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import ReviewForm from '../../review-form/review-form';
 import NotFoundPage from '../not-found-screen/not-found-screen';
-import { AppRoute } from '../../../const';
+import { AuthorizationStatus } from '../../../const';
 import ReviewList from '../../review-list/review-list';
 import NearPlacesList from '../../near-places-list/near-places-list';
 import Map from '../../map/map';
-import type { OfferPreviewType } from '../../../types/offer-preview';
-import type { ReviewType } from '../../../types/review';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { fetchOffer, fetchNearPlaces, fetchReviews } from '../../../store/api-actions';
+import Spinner from '../../spinner/spinner';
+import Header from '../../header/header';
 
-type OfferPageProps = {
-  reviews: ReviewType[];
-  nearPlaces: OfferPreviewType[];
-};
-
-function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
+function OfferPage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
-  const offers = useSelector((state: RootState) => state.offers);
-  const offer = offers.find((item) => item.id === id);
+  const dispatch = useAppDispatch();
+  const offer = useAppSelector((state) => state.offer);
+  const nearPlaces = useAppSelector((state) => state.nearPlaces);
+  const reviews = useAppSelector((state) => state.reviews);
+  const isOfferLoading = useAppSelector((state) => state.isOfferLoading);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOffer(id));
+      dispatch(fetchNearPlaces(id));
+      dispatch(fetchReviews(id));
+    }
+  }, [id, dispatch]);
+
+  if (isOfferLoading) {
+    return <Spinner />;
+  }
 
   if (!offer) {
     return <NotFoundPage/>;
@@ -43,34 +55,7 @@ function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
 
   return(
     <div className="page" >
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link" to={AppRoute.Main}>
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </Link>
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <a className="header__nav-link header__nav-link--profile" href="#">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </a>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="page__main page__main--offer">
         <section className="offer">
@@ -150,7 +135,9 @@ function OfferPage({ reviews, nearPlaces}: OfferPageProps): JSX.Element {
               </div>
               <section className="offer__reviews reviews">
                 <ReviewList reviews={reviews} />
-                <ReviewForm />
+                {authorizationStatus === AuthorizationStatus.Auth && (
+                  <ReviewForm offerId={offer.id} />
+                )}
               </section>
             </div>
           </div>

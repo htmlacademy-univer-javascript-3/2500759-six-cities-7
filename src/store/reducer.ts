@@ -1,7 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { CityName, AuthorizationStatus } from '../const';
 import type { OfferType } from '../types/offer';
-import { changeCity, loadOffersError, loadOffersRequest, loadOffersSuccess, setAuthorizationStatus, setUser } from './actions';
+import type { ReviewType } from '../types/review';
+import type { OfferPreviewType } from '../types/offer-preview';
+import { changeCity, loadOffersError, loadOffersRequest, loadOffersSuccess, setAuthorizationStatus, setReviews, setNearPlaces, setOffer, setOfferLoading, setUser, addReview } from './actions';
 import { AuthInfo } from '../types/user';
 
 type InitialStateType = {
@@ -11,6 +13,10 @@ type InitialStateType = {
   error: string | null;
   authorizationStatus: AuthorizationStatus;
   user: AuthInfo | null;
+  offer: OfferType | null;
+  nearPlaces: OfferPreviewType[];
+  reviews: ReviewType[];
+  isOfferLoading: boolean;
 };
 
 const initialState: InitialStateType = {
@@ -20,6 +26,10 @@ const initialState: InitialStateType = {
   error: null,
   authorizationStatus: AuthorizationStatus.Unknown,
   user: null,
+  offer: null,
+  nearPlaces: [],
+  reviews: [],
+  isOfferLoading: false,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -43,6 +53,21 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setUser, (state, action) => {
       state.user = action.payload;
+    })
+    .addCase(setOffer, (state, action) => {
+      state.offer = action.payload;
+    })
+    .addCase(setNearPlaces, (state, action) => {
+      state.nearPlaces = action.payload;
+    })
+    .addCase(setReviews, (state, action) => {
+      state.reviews = action.payload;
+    })
+    .addCase(addReview, (state, action) => {
+      state.reviews.push(action.payload);
+    })
+    .addCase(setOfferLoading, (state, action) => {
+      state.isOfferLoading = action.payload;
     });
 });
 

@@ -1,7 +1,16 @@
 import { ChangeEvent, useState } from 'react';
+import type { FormEvent } from 'react';
 import { MIN_COMMENT_LENGTH, MAX_COMMENT_LENGTH } from '../../const';
+import { useAppDispatch } from '../../store/hooks';
+import { postReview } from '../../store/api-actions';
 
-function ReviewForm(): JSX.Element {
+type ReviewFormProps = {
+  offerId: string;
+};
+
+function ReviewForm({offerId}: ReviewFormProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     rating: 0,
     review: '',
@@ -15,13 +24,32 @@ function ReviewForm(): JSX.Element {
     setFormData((prev) => ({ ...prev, review: evt.target.value }));
   };
 
+  const handleSubmit = async (evt: FormEvent) => {
+    evt.preventDefault();
+    setError(null);
+
+    const success = await dispatch(
+      postReview({
+        offerId,
+        comment: formData.review,
+        rating: formData.rating,
+      })
+    );
+
+    if (success) {
+      setFormData({ rating: 0, review: '' });
+    } else {
+      setError('Не удалось отправить комментарий');
+    }
+  };
+
   const isValid =
     formData.rating > 0 &&
     formData.review.length >= MIN_COMMENT_LENGTH &&
     formData.review.length <= MAX_COMMENT_LENGTH;
 
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form className="reviews__form form" onSubmit={(evt) => void handleSubmit(evt)}>
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
@@ -58,6 +86,7 @@ function ReviewForm(): JSX.Element {
         onChange={handleReviewChange}
       />
       <div className="reviews__button-wrapper">
+        {error && <p className="reviews__error">{error}</p>}
         <p className="reviews__help">
           To submit review please make sure to set{' '}
           <span className="reviews__star">rating</span> and describe your stay
@@ -77,3 +106,4 @@ function ReviewForm(): JSX.Element {
 }
 
 export default ReviewForm;
+

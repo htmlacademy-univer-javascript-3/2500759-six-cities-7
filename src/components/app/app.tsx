@@ -9,16 +9,12 @@ import LoginPage from '../../components/pages/login-screen/login-screen';
 import OfferPage from '../../components/pages/offer-screen/offer-screen';
 import NotFoundPage from '../../components/pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../../components/private-route/private-route';
-import type { OfferPreviewType } from '../../types/offer-preview';
-import type { ReviewType } from '../../types/review';
 
 type AppProps = {
   cardsCount: number;
-  reviews: ReviewType[];
-  nearPlaces: OfferPreviewType[];
 }
 
-function App({cardsCount, reviews, nearPlaces}: AppProps): JSX.Element {
+function App({cardsCount}: AppProps): JSX.Element {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(loadOffers());
@@ -46,7 +42,7 @@ function App({cardsCount, reviews, nearPlaces}: AppProps): JSX.Element {
         />
         <Route
           path={AppRoute.Offer}
-          element={<OfferPage reviews={reviews} nearPlaces={nearPlaces} />}
+          element={<OfferPage />}
         />
         <Route
           path={AppRoute.NotFound}
